@@ -46,6 +46,7 @@ compute-heavy workflows: training, batch inference, image/video production.
 | [docs/agent-toolkit.md](docs/agent-toolkit.md) | Driving Kaggle programmatically: MCP + REST, token hygiene, FreeFlow scouting |
 | [docs/freeflow-discoveries.md](docs/freeflow-discoveries.md) | Hosted free-tool scouting per pipeline stage: what to sample hosted vs produce on Kaggle |
 | [docs/comfyui-quickstart.md](docs/comfyui-quickstart.md) | 5-minute ComfyUI (Kaggle + potato PCs) + [`premade txt2img workflow`](docs/assets/comfyui-sd15-txt2img.json) |
+| [docs/comfyui-cli-and-mcp.md](docs/comfyui-cli-and-mcp.md) | The agent path: official `comfy-cli` headless workflows + MCP bridges that let an agent drive ComfyUI as tools |
 | — | + [`premade img2img/inpaint workflow`](docs/assets/comfyui-sd15-imgedit.json) (one graph, both modes) |
 
 ### Models — the weights
@@ -74,4 +75,5 @@ compute-heavy workflows: training, batch inference, image/video production.
 - [x] Model-management guide (persistence ladder, quantization ladder)
 - [x] Abliterated/uncensored models guide (technique, publishers, free-CPU recipe)
 - [x] FreeFlow scouting pass documented (hosted free tools vs Kaggle roles; MusicGen gem)
+- [x] comfy-cli + MCP agent path documented (native tool-call generation, Kaggle + potato variants)
 - [ ] Phase 0: timed video-generation benchmark (measures clips/hour on T4×2)
