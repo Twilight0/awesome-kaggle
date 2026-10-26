@@ -77,7 +77,7 @@ Same three flags, that's all the "config". Expectations, honestly stated:
   mid laptop. Good for iteration, previews and occasional use.
 - The free Kaggle T4 is ~20–50× faster than most CPUs for this — a better partner than a
   local install for serious batches.
-- Keep checkpoints small on山脉: SD 1.5 (4 GB) → SDXL (~7 GB) → Flux GGUF-quantized
+- Keep checkpoints small on disk: SD 1.5 (4 GB) → SDXL (~7 GB) → Flux GGUF-quantized
   (~6–12 GB) is the whole ladder; nothing here requires 24 GB VRAM.
 - Workflows are single `.json` files — save one from someone else, drop it onto the
   canvas, done. ComfyUI can also embed a workflow inside generated `.png` outputs.

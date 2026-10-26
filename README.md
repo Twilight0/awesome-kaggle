@@ -5,49 +5,71 @@ cloud — driven by an agent, not just by a browser.
 
 Kaggle is best known as a data-science competition platform. What this repo documents is a
 different framing: it is a **~30 GPU-hours/week free batch-compute service** (2× Tesla T4,
-TPU access, ~70 GB scratch disk, datasets as persistent storage) that can run notebooks
-headlessly and untended for up to 12 hours at a time — a suitable target for delegating
-compute-heavy workflows.
-
-## Documents
-
-| File | What it covers |
-|---|---|
-| [docs/quota-and-hardware.md](docs/quota-and-hardware.md) | Verified free-tier specs: GPUs, TPUs, quotas, session caps, storage model |
-| [docs/delegation-workflow.md](docs/delegation-workflow.md) | The headless notebook loop: push → run → poll → harvest → handoff via datasets |
-| [docs/projects-that-fit-the-window.md](docs/projects-that-fit-the-window.md) | A catalog of project types that complete inside the allowed time windows |
-| [docs/comfyui-quickstart.md](docs/comfyui-quickstart.md) | 5-minute ComfyUI setup (Kaggle + potato PCs), premade importable workflow |
-| [docs/video-generation.md](docs/video-generation.md) | Flagship investigation: video+audio generation on 2 free T4s; the long-form pipeline |
-| [docs/agent-toolkit.md](docs/agent-toolkit.md) | Driving Kaggle programmatically (MCP, REST, API tokens) from an agent |
+TPU access, ~70 GB scratch disk, datasets as persistent storage) that runs notebooks
+headlessly and untended for up to 12 h at a time — a suitable target for delegating
+compute-heavy workflows: training, batch inference, image/video production.
 
 ## The numbers, in one table
 
 | Resource | Free-tier value |
 |---|---|
-| GPU options | 2× Tesla T4 (16 GB each, can be used model-parallel) or 1× P100 |
-| TPU | TPU v3-8 |
+| GPU options | 2× Tesla T4 (16 GB each) or 1× P100 |
+| TPU | v3-8 |
 | Weekly accelerator budget | **30 h GPU · 20 h TPU** (verified via API; resets weekly) |
-| Session wall-clock | 12 h (CPU/GPU) · 9 h (TPU) |
+| Session wall-clock | 12 h (CPU/GPU) · 9 h (TPU) — CPU sessions are **free** of the GPU meter |
 | RAM / scratch disk | ~30 GB RAM · ~70 GB ephemeral disk |
-| Notebooks output | ~20 GB per version — push large artifacts to datasets instead |
-| Internet | Toggleable per notebook (one-time phone verification for GPU/TPU/internet) |
+| Notebook output | ~20 GB per version — push large artifacts to datasets instead |
+| Internet | toggleable per notebook (one-time phone verification) |
+| Kaggle pricing | there is none — free only; scaling up = other free tiers or burst-rental GPUs |
 
-The one thing Kaggle does not sell is a paid tier. Scaling beyond 30 h/week means stacking
-other free tiers (Colab, Lightning, Modal) or burst-renting marketplace GPUs (Vast.ai spot
-4090 at ~$0.08–0.50/h, RunPod at $0.34/h).
+## Docs
+
+### Foundations — read these two first
+
+| File | What it covers |
+|---|---|
+| [docs/quota-and-hardware.md](docs/quota-and-hardware.md) | Free-tier specs, storage model, quota economics |
+| [docs/delegation-workflow.md](docs/delegation-workflow.md) | The headless notebook loop: push → run → poll → harvest → dataset handoff |
+
+### Playbooks — what to run
+
+| File | What it covers |
+|---|---|
+| [docs/projects-that-fit-the-window.md](docs/projects-that-fit-the-window.md) | 20+ workload types, each budgeted against the time windows |
+| [docs/video-generation.md](docs/video-generation.md) | Video + synced audio on 2 free T4s (LTX-2.x, MiniMax H3); long-form pipeline; Phase-0 plan |
+| [docs/image-editing.md](docs/image-editing.md) | img2img/masked inpaint on one graph; upscale/restore/rembg finishing suite |
+
+### Tooling — the hands
+
+| File | What it covers |
+|---|---|
+| [docs/agent-toolkit.md](docs/agent-toolkit.md) | Driving Kaggle programmatically: MCP + REST, token hygiene, FreeFlow scouting |
+| [docs/comfyui-quickstart.md](docs/comfyui-quickstart.md) | 5-minute ComfyUI (Kaggle + potato PCs) + [`premade txt2img workflow`](docs/assets/comfyui-sd15-txt2img.json) |
+| — | + [`premade img2img/inpaint workflow`](docs/assets/comfyui-sd15-imgedit.json) (one graph, both modes) |
+
+### Models — the weights
+
+| File | What it covers |
+|---|---|
+| [docs/models-on-kaggle.md](docs/models-on-kaggle.md) | Kaggle Models vs HF, quantization ladder, pay-once-attach-forever dataset pattern |
+| [docs/abliterated-models.md](docs/abliterated-models.md) | Abliterated/uncensored models: technique, publishers, GGUF on free CPU quota; licenses & responsibility |
 
 ## Operating principles
 
-1. **Batch over interactive.** `SaveAndRunAll` runs have no idle timeout; interactive
-   notebooks die after ~20 minutes of inattention. Anything meaningful should be launched
-   headlessly.
-2. **Datasets are the file system.** Notebook output volumes are ephemeral and capped;
-   long-running work checkpoints into datasets and resumes in the next session.
-3. **Measure before committing quota.** Every throughput claim in these docs needs a
-   timed benchmark run before it becomes an economic assumption.
+1. **Batch over interactive.** `SaveAndRunAll` runs untended up to 12 h; interactive
+   notebooks die after ~20 idle minutes and burn GPU quota while idle.
+2. **Datasets are the file system.** Outputs are ephemeral and capped; checkpoints and
+   deliverables live in datasets, which also carry state between sessions.
+3. **CPU is free — spend GPU only where tensors need it.** Stitching, TTS, dataset ops,
+   upscales, GGUF inference: CPU sessions. Diffusion and training: GPU.
+4. **Measure before committing quota.** Throughput claims are hypotheses until a timed
+   benchmark confirms them.
 
 ## Status
 
 - [x] Free-tier facts verified via Kaggle API (October 2026)
 - [x] Kaggle video-gen ecosystem surveyed (LTX-2.x distilled, MiniMax H3, WAN 2.2)
-- [ ] Phase 0: timed video-generation benchmark notebook (measures clips/hour on T4×2)
+- [x] ComfyUI quickstart + two premade importable workflows (txt2img, img2img/inpaint)
+- [x] Model-management guide (persistence ladder, quantization ladder)
+- [x] Abliterated/uncensored models guide (technique, publishers, free-CPU recipe)
+- [ ] Phase 0: timed video-generation benchmark (measures clips/hour on T4×2)
