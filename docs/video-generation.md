@@ -76,3 +76,8 @@ Decision rules after Phase 0:
 - `unlockbulk/ltx-2-5-22b-distilled-video-generator` — best annotated source of how it works
 - `unlockbulk/ltx-2-3-22b-distilled-1-1-q4-t2v-kaggle` — most portable source (T2V only)
 - `unlockbulk/minimax-h3-turbo-int8-video-audio` — audio-native alternative, VRAM notes goldmine
+
+**Before spending GPU quota on Phase 0**: Giz.ai's web app lists free daily access to the
+exact same LTX-2.5 Distilled and H3 Turbo models (2 uses/day, 480p–736p as of 2026-10-20)
+— free model auditions without touching the weekly budget. Details and the hosted-vs-Kaggle
+tool split: [freeflow-discoveries.md](freeflow-discoveries.md).

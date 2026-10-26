@@ -31,6 +31,7 @@ size/quality or with resume. "⛔" = wrong shape for Kaggle.
 | Stable Diffusion / SDXL / Flux-quantized batch image production | ✅ 100–1000 images per session | deliverable: image dataset |
 | **Video + audio generation (LTX-2.x distilled, MiniMax H3)** | ⚠️ see video-generation.md | scheduled: ≈10–20 min of 480p footage per 12 h session (unmeasured — Phase 0 pending) |
 | Video upscaling / interpolation (RIFE, Real-ESRGAN) over existing footage | ✅ 1 session | CPU stages can pair with GPU stage notebooks |
+| **MusicGen (AudioCraft) — soundtrack generation** | ✅ CPU/T4 session | code MIT, **weights CC-BY-NC 4.0** — hobby videos only (see freeflow-discoveries.md) |
 | Whisper-generated subtitles → styled caption renders (ffmpeg, CPU) | ✅ 0 GPU quota | run on CPU sessions to save budget |
 
 ## Data ops ( CPU-heavy, no accelerator needed)

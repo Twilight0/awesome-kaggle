@@ -44,6 +44,7 @@ compute-heavy workflows: training, batch inference, image/video production.
 | File | What it covers |
 |---|---|
 | [docs/agent-toolkit.md](docs/agent-toolkit.md) | Driving Kaggle programmatically: MCP + REST, token hygiene, FreeFlow scouting |
+| [docs/freeflow-discoveries.md](docs/freeflow-discoveries.md) | Hosted free-tool scouting per pipeline stage: what to sample hosted vs produce on Kaggle |
 | [docs/comfyui-quickstart.md](docs/comfyui-quickstart.md) | 5-minute ComfyUI (Kaggle + potato PCs) + [`premade txt2img workflow`](docs/assets/comfyui-sd15-txt2img.json) |
 | — | + [`premade img2img/inpaint workflow`](docs/assets/comfyui-sd15-imgedit.json) (one graph, both modes) |
 
@@ -72,4 +73,5 @@ compute-heavy workflows: training, batch inference, image/video production.
 - [x] ComfyUI quickstart + two premade importable workflows (txt2img, img2img/inpaint)
 - [x] Model-management guide (persistence ladder, quantization ladder)
 - [x] Abliterated/uncensored models guide (technique, publishers, free-CPU recipe)
+- [x] FreeFlow scouting pass documented (hosted free tools vs Kaggle roles; MusicGen gem)
 - [ ] Phase 0: timed video-generation benchmark (measures clips/hour on T4×2)
