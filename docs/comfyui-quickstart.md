@@ -32,18 +32,65 @@ Create a notebook, enable **internet**, GPU optional (T4 if you have it, CPU wor
 
 (SDXL, Flux or WAN files plug into the same folder — NVIDIA GPU just makes them fast.)
 
-**Cell 3 — launch + port-forward:**
+**Cell 3 — launch the server in the background** (so later cells keep running):
 
-```bash
-%cd /kaggle/tmp/ComfyUI
-!python main.py --dont-print-server --listen
-# the notebook will live-host the UI on :8188; open it via the notebook's proxy/tunnel
+```python
+!nohup python /kaggle/tmp/ComfyUI/main.py --listen --port 8188 > /kaggle/tmp/ComfyUI/server.log 2>&1 &
+!sleep 25 && tail -5 /kaggle/tmp/ComfyUI/server.log   # expect: "... To see the GUI: http://127.0.0.1:8188"
 ```
 
-For **headless batch** (the delegation-workflow pattern), skip the UI entirely — ComfyUI
-is also an HTTP API: save a workflow as JSON in the editor, then `POST {"prompt":
-<workflow-json>}` to `http://127.0.0.1:8188/prompt` in a loop. One notebook, N images,
-artifacts to a dataset. No clicking.
+## Connecting to the UI — the part Kaggle makes non-obvious
+
+Kaggle notebooks have **no built-in port-forwarding** (unlike Colab), so a browser on your
+laptop cannot reach `localhost:8188` directly. The standard fix is a tunnel — one extra
+cell, no account needed:
+
+**Cell 4 — Cloudflare quick tunnel (recommended):**
+
+```python
+!wget -q https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64 \
+  -O /kaggle/tmp/cloudflared && chmod +x /kaggle/tmp/cloudflared
+!sleep 15 && /kaggle/tmp/cloudflared tunnel --url http://localhost:8188 --no-autoupdate
+# output will contain a line like:  https://xxxx-yyyy-aaaa.trycloudflare.com  ← open this
+```
+
+Keep this cell running (it holds the tunnel open; that also keeps the session from idling
+out while you work). The first URL appears after ~10–30 s.
+
+What to know before you click that link:
+
+| Fact | Detail |
+|---|---|
+| **The URL is ephemeral** | a new trycloudflare URL (and new session setup) every session; there is no fixed address on the free tier |
+| **Anyone with the URL has your machine** | the ComfyUI UI accepts file uploads by default — treat the link as a password, don't share or paste it to chat |
+| **Session dies are expected** | a throwaway server on a rented notebook disappears when the session ends; configs you care about live in datasets (see models-on-kaggle.md), not the UI |
+| **Needs the internet toggle** | already enabled in Cell 1 of the guide setup |
+
+Alternative tunnels if Cloudflare is unavailable in your network: `ngrok` (same pattern,
+requires a free account + authtoken), or `bore` (single static binary, no account). The
+surveyed community notebooks use exactly this pattern (Cloudflare + UI server); nothing
+differs under the hood.
+
+**Or: skip connecting entirely** — the Kaggle-native option. Keep the whole loop *inside*
+the notebook session and never open a browser:
+
+```python
+# after Cell 3, replacement for the UI for batch work:
+import json, urllib.request
+workflow = json.load(open("/kaggle/input/<your-dataset>/workflow.json"))
+# ('Save (API format)' export of your premade graph happens in the UI; commit it to a dataset once)
+urllib.request.urlopen(urllib.request.Request(
+    "http://127.0.0.1:8188/prompt",
+    data=json.dumps({"prompt": workflow, "client_id": "batch"}).encode(),
+    headers={"Content-Type": "application/json"}))
+```
+
+Then poll `/history`, parse the output filenames, and hand everything to a dataset
+per the [delegation workflow](delegation-workflow.md). Same idea as `SaveAndRunAll`
+headless pushes: the notebook is the server, the session is the queue.
+
+**On a potato PC (local)**, none of the above applies — the UI lives at plain
+`http://127.0.0.1:8188` in your own browser. Tunnel instructions are Kaggle-only.
 
 ## Premade workflow — import and go
 
