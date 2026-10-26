@@ -16,6 +16,7 @@ compute-heavy workflows.
 | [docs/quota-and-hardware.md](docs/quota-and-hardware.md) | Verified free-tier specs: GPUs, TPUs, quotas, session caps, storage model |
 | [docs/delegation-workflow.md](docs/delegation-workflow.md) | The headless notebook loop: push → run → poll → harvest → handoff via datasets |
 | [docs/projects-that-fit-the-window.md](docs/projects-that-fit-the-window.md) | A catalog of project types that complete inside the allowed time windows |
+| [docs/comfyui-quickstart.md](docs/comfyui-quickstart.md) | 5-minute ComfyUI setup (Kaggle + potato PCs), premade importable workflow |
 | [docs/video-generation.md](docs/video-generation.md) | Flagship investigation: video+audio generation on 2 free T4s; the long-form pipeline |
 | [docs/agent-toolkit.md](docs/agent-toolkit.md) | Driving Kaggle programmatically (MCP, REST, API tokens) from an agent |
 
